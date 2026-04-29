@@ -11,17 +11,17 @@ Rifqi Dwi Muslim | 5027251077
  
 Soal ini meminta pembuatan sistem komunikasi client-server bernama **The Wired**, yang terinspirasi dari serial Serial Experiments Lain. Sistem terdiri dari dua komponen utama:
  
-- `wired.c` → server yang merepresentasikan jaringan The Wired
-- `navi.c` → client yang merepresentasikan perangkat NAVI milik setiap pengguna
-- `protocol.h` → modul bersama yang menangani definisi paket, logging, dan konfigurasi koneksi
+- `wired.c`, server yang merepresentasikan jaringan The Wired
+- `navi.c`, client yang merepresentasikan perangkat NAVI milik setiap pengguna
+- `protocol.h`, modul bersama yang menangani definisi paket, logging, dan konfigurasi koneksi
 Beberapa requirement utama yang harus dipenuhi:
  
 1. Koneksi NAVI ke server harus dibaca dari **file protocol**, bukan hardcode
 2. NAVI harus bisa mengirim dan menerima pesan secara **asinkron tanpa fork**
-3. Server harus scalable — tidak boleh terblok oleh satu client yang lambat
+3. Server harus scalable, tidak boleh terblok oleh satu client yang lambat
 4. Setiap NAVI harus punya **identitas unik** (tidak boleh ada nama duplikat)
-5. Semua pesan yang berhasil di-broadcast harus tercatat di **history.log**
-6. Ada entitas khusus bernama **The Knights** yang bisa mengakses prosedur jarak jauh (RPC) — cek user aktif, uptime server, dan emergency shutdown — lewat autentikasi password, tanpa melalui jalur broadcast biasa
+5. Semua pesan yang berhasil dibroadcast harus tercatat di **history.log**
+6. Ada entitas khusus bernama **The Knights** yang bisa mengakses prosedur jarak jauh (RPC), cek user aktif, uptime server, dan emergency shutdown, lewat autentikasi password, tanpa melalui jalur broadcast biasa
 ---
  
 ## Alur Pengerjaan
@@ -40,9 +40,9 @@ Diuji dengan beberapa terminal bersamaan — satu server, beberapa client biasa,
  
 ---
  
-## Penjelasan Logic Kode
+## Penjelasan Kode
  
-### `protocol.h` — Kontrak Komunikasi
+### `protocol.h` (Kontrak Komunikasi)
  
 Semua definisi dan implementasi fungsi utilitas dipusatkan di satu file ini supaya konsisten antara server dan client.
  
@@ -74,9 +74,9 @@ typedef struct {
 } Packet;
 ```
  
-Dengan struct ini, satu `send()` dan `recv()` bisa menangani semua jenis pesan — cukup baca field `type` untuk tahu harus diproses sebagai apa.
+Dengan struct ini, satu `send()` dan `recv()` bisa menangani semua jenis pesan, cukup baca field `type` untuk tahu harus diproses sebagai apa.
  
-**`init_protocol()`** dipanggil server saat startup, menulis alamat dan port ke file `protocol.conf`. **`read_protocol()`** dipanggil client saat startup untuk membacanya — kalau file tidak ada, client fallback ke nilai default. **`write_log()`** mencatat setiap kejadian ke `history.log`:
+**`init_protocol()`** dipanggil server saat startup, menulis alamat dan port ke file `protocol.conf`. **`read_protocol()`** dipanggil client saat startup untuk membacanya, kalau file tidak ada, client fallback ke nilai default. **`write_log()`** mencatat setiap kejadian ke `history.log`:
  
 ```
 [2026-04-26 19:06:40] [System] [SERVER ONLINE]
@@ -86,7 +86,7 @@ Dengan struct ini, satu `send()` dan `recv()` bisa menangani semua jenis pesan �
  
 ---
  
-### `wired.c` — Server (The Wired)
+### `wired.c` (Server (The Wired))
  
 #### Registry "Souls"
  
@@ -122,7 +122,7 @@ while (1) {
 }
 ```
  
-Kalau ada client yang lambat atau idle, server tidak terblok — `select()` langsung lanjut ke fd lain yang siap diproses.
+Kalau ada client yang lambat atau idle, server tidak terblok, `select()` langsung lanjut ke fd lain yang siap diproses.
  
 #### Cek Nama Duplikat
  
@@ -167,7 +167,7 @@ Server menangkap `SIGINT` (Ctrl+C) lewat `signal(SIGINT, sigint_handler)`. Sebel
  
 ---
  
-### `navi.c` — Client (NAVI)
+### `navi.c` (Client (NAVI))
  
 #### Helper Kecil
  
@@ -220,7 +220,7 @@ Setiap `send()` dan `recv()` dicek return value-nya. Kalau gagal, ada pesan erro
  
 #### Mode The Knights (Sinkron)
  
-The Knights tidak butuh thread karena tidak perlu menerima pesan dari orang lain secara bersamaan. Alurnya linear: tampil menu → input → kirim RPC → tunggu balasan → ulangi.
+The Knights tidak butuh thread karena tidak perlu menerima pesan dari orang lain secara bersamaan.
  
 ---
  
