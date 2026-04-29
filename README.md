@@ -9,7 +9,7 @@ Rifqi Dwi Muslim | 5027251077
  
 ## Deskripsi Soal
  
-Soal ini meminta pembuatan sistem komunikasi client-server bernama **The Wired**, yang terinspirasi dari serial Serial Experiments Lain. Sistem terdiri dari dua komponen utama:
+Soal ini meminta pembuatan sistem komunikasi client server bernama **The Wired**, yang terinspirasi dari serial Serial Experiments Lain. Sistem terdiri dari dua komponen utama:
  
 - `wired.c`, server yang merepresentasikan jaringan The Wired
 - `navi.c`, client yang merepresentasikan perangkat NAVI milik setiap pengguna
@@ -33,10 +33,10 @@ Semua konstanta, tipe paket, struct `Packet`, dan implementasi fungsi logging se
 Server dibangun menggunakan `select()` supaya bisa memantau banyak client sekaligus. Sistem registry `Soul[]` dibuat untuk tracking semua NAVI, dilengkapi broadcast, pengecekan duplikat nama, dan RPC The Knights.
  
 **3. Bangun client (`navi.c`)**  
-Client menggunakan 2 pthread — `recv_thread` dan `send_thread` — untuk async tanpa fork. Ada loop registrasi dengan retry otomatis dan mode sinkron khusus untuk The Knights.
+Client menggunakan 2 pthread  `recv_thread` dan `send_thread`, untuk async tanpa fork. Ada loop registrasi dengan retry otomatis dan mode sinkron khusus untuk The Knights.
  
 **4. Testing**  
-Diuji dengan beberapa terminal bersamaan — satu server, beberapa client biasa, dan satu The Knights.
+Diuji dengan beberapa terminal bersamaan, satu server, beberapa client biasa, dan satu The Knights.
  
 ---
  
