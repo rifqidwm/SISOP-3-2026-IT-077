@@ -1,12 +1,5 @@
 /*
  * wired.c — Server The Wired
- *
- * Logika unik:
- *  - "Souls registry" = array struct buat tracking semua NAVI yang connect
- *  - select() buat scalability tanpa thread di server
- *  - The Knights: mode RPC khusus lewat socket yang sama, bedain via PKT_AUTH
- *  - shout() = broadcast, tapi otomatis skip The Knights & si pengirim
- */
 
 #include <stdio.h>
 #include <stdlib.h>
